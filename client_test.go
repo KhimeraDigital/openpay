@@ -22,7 +22,7 @@ func TestClient(t *testing.T) {
 			LastName:        "Sanchez",
 			Email:           "rick@mail.com",
 			RequiresAccount: false,
-			Address: Address{
+			Address: &Address{
 				Line1:       "Calle 6 #910",
 				City:        "Cordoba",
 				State:       "VER",
@@ -80,7 +80,7 @@ func TestClient(t *testing.T) {
 			LastName:        "Sanchez",
 			Email:           "rick@mail.com",
 			RequiresAccount: false,
-			Address: Address{
+			Address: &Address{
 				Line1:       "Calle 6 #910",
 				City:        "Cordoba",
 				State:       "VER",
@@ -141,7 +141,7 @@ func TestClient(t *testing.T) {
 			LastName:        "Sanchez",
 			Email:           "rick@mail.com",
 			RequiresAccount: false,
-			Address: Address{
+			Address: &Address{
 				Line1:       "Calle 6 #910",
 				City:        "Cordoba",
 				State:       "VER",
@@ -153,7 +153,7 @@ func TestClient(t *testing.T) {
 		defer client.Customers.Delete(testCustomer.ID)
 		acc := &BankAccount{
 			HolderName: "Juan Hernández Sánchez",
-			Clabe: "012298026516924616",
+			Clabe:      "012298026516924616",
 		}
 
 		t.Run("Add", func(t *testing.T) {
@@ -190,7 +190,7 @@ func TestClient(t *testing.T) {
 			}
 		})
 	})
-	
+
 	t.Run("Charges", func(t *testing.T) {
 		// Create test customer
 		testCustomer := &Customer{
@@ -198,7 +198,7 @@ func TestClient(t *testing.T) {
 			LastName:        "Sanchez",
 			Email:           "rick@mail.com",
 			RequiresAccount: false,
-			Address: Address{
+			Address: &Address{
 				Line1:       "Calle 6 #910",
 				City:        "Cordoba",
 				State:       "VER",
@@ -323,9 +323,9 @@ func TestClient(t *testing.T) {
 
 	t.Run("Webhooks", func(t *testing.T) {
 		hook := &Webhook{
-			User: "foo",
+			User:     "foo",
 			Password: "bar",
-			URL: "https://hookb.in/voJJ3XXQ",
+			URL:      "https://hookb.in/voJJ3XXQ",
 			EventTypes: []string{
 				"charge.succeeded",
 				"spei.received",
