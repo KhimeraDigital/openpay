@@ -140,6 +140,21 @@ type Transaction struct {
 
 	// Card points used, if any
 	CardPoints *CardPoints `json:"card_points,omitempty"`
+
+	// Payment Method
+	PaymentMethod *PaymentMethod `json:"payment_method,omitempty"`
+}
+
+type PaymentMethod struct {
+	Type             string `json:"type,omitempty"`
+	Reference        string `json:"reference,omitempty"`
+	BarcodeURL       string `json:"barcode_url,omitempty"`
+	BarcodePaybinURL string `json:"barcode_paybin_url,omitempty"`
+	PaybinReference  string `json:"paybin_reference,omitempty"`
+	Agreement        string `json:"agreement,omitempty"`
+	Bank             string `json:"bank,omitempty"`
+	Clabe            string `json:"clabe,omitempty"`
+	Name             string `json:"name,omitempty"`
 }
 
 // Basic address information

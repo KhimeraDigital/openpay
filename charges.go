@@ -83,6 +83,7 @@ func (cc *chargesClient) List(req *ChargesListRequest) ([]Transaction, error) {
 }
 
 func (cc *chargesClient) AtStore(charge *ChargeAtStore) (*Transaction, error) {
+	charge.Method = "store"
 	b, err := cc.c.request(&requestOptions{
 		endpoint: "charges",
 		method:   http.MethodPost,
@@ -98,6 +99,7 @@ func (cc *chargesClient) AtStore(charge *ChargeAtStore) (*Transaction, error) {
 }
 
 func (cc *chargesClient) AtBank(charge *ChargeAtBank) (*Transaction, error) {
+	charge.Method = "bank_account"
 	b, err := cc.c.request(&requestOptions{
 		endpoint: "charges",
 		method:   http.MethodPost,
@@ -113,6 +115,7 @@ func (cc *chargesClient) AtBank(charge *ChargeAtBank) (*Transaction, error) {
 }
 
 func (cc *chargesClient) WithCard(charge *ChargeWithStoredCard) (*Transaction, error) {
+	charge.Method = "card"
 	b, err := cc.c.request(&requestOptions{
 		endpoint: "charges",
 		method:   http.MethodPost,
@@ -131,7 +134,7 @@ func (cc *chargesClient) Capture(txID string, amount float32) (*Transaction, err
 	b, err := cc.c.request(&requestOptions{
 		endpoint: path.Join("charges", txID, "capture"),
 		method:   http.MethodPost,
-		data:     map[string]float32{"amount":amount},
+		data:     map[string]float32{"amount": amount},
 	})
 	if err != nil {
 		return nil, err
@@ -146,8 +149,8 @@ func (cc *chargesClient) Refund(txID string, amount float32, description string)
 	b, err := cc.c.request(&requestOptions{
 		endpoint: path.Join("charges", txID, "refund"),
 		method:   http.MethodPost,
-		data:     map[string]interface{}{
-			"amount": amount,
+		data: map[string]interface{}{
+			"amount":      amount,
 			"description": description,
 		},
 	})
