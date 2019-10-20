@@ -468,4 +468,7 @@ type Webhook struct {
 	// order.cancelled
 	// order.payment.cancelled
 	EventTypes []string `json:"event_types,omitemtpy"`
+
+	// Only for transaction webhooks
+	Transaction *Transaction `json:"transaction,omitempty"`
 }

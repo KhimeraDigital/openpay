@@ -6,7 +6,7 @@ import (
 	"path"
 )
 
-// Defines the public interface required to access available 'customers' methods
+// CustomersAPI Defines the public interface required to access available 'customers' methods
 type CustomersAPI interface {
 	// https://www.openpay.mx/docs/api/#crear-un-nuevo-cliente
 	Create(customer *Customer) error

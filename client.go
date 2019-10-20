@@ -27,16 +27,16 @@ type Client struct {
 	// Methods related to 'webhooks' management
 	Webhooks WebhooksAPI
 
-	c           *http.Client
-	key         string
-	merchantID  string
-	apiVersion  string
-	userAgent   string
-	apiEndpoint string
+	c          *http.Client
+	key        string
+	merchantID string
+	apiVersion string
+	userAgent  string
+	apiHost    string
 }
 
-// Available configuration options, if not provided sane values will be
-// used by default
+// Options Available configuration options
+// if not provided sane values will be used by default
 type Options struct {
 	// Time to wait for requests, in seconds
 	Timeout uint
@@ -118,9 +118,9 @@ func NewClient(key, merchantID string, options *Options) (*Client, error) {
 
 	// Set client endpoint
 	if options.UseProduction {
-		client.apiEndpoint = liveAPI
+		client.apiHost = liveAPI
 	} else {
-		client.apiEndpoint = testAPI
+		client.apiHost = testAPI
 	}
 
 	client.Charges = &chargesClient{c: client}
@@ -130,22 +130,30 @@ func NewClient(key, merchantID string, options *Options) (*Client, error) {
 }
 
 // Dispatch a network request to the service
-func (i *Client) request(r *requestOptions) ([]byte, error) {
-	// Get request endpoint
-	endpoint := i.apiEndpoint + path.Join(i.apiVersion, i.merchantID, r.endpoint)
-
-	// Build request with headers and credentials
-	data, _ := json.Marshal(r.data)
-	req, _ := http.NewRequest(r.method, endpoint, bytes.NewReader(data))
+func (c *Client) request(r *requestOptions) ([]byte, error) {
+	// Build request endpoint
+	endpoint := c.apiHost + path.Join(c.apiVersion, c.merchantID, r.endpoint)
+	// Encode payload
+	data, err := json.Marshal(r.data)
+	if err != nil {
+		return nil, err
+	}
+	// Create request
+	req, err := http.NewRequest(r.method, endpoint, bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	// Set request headers
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
-	req.SetBasicAuth(i.key, "")
-	if i.userAgent != "" {
-		req.Header.Add("User-Agent", i.userAgent)
+	// Set auth key
+	req.SetBasicAuth(c.key, "")
+	if c.userAgent != "" {
+		req.Header.Add("User-Agent", c.userAgent)
 	}
 
 	// Execute request
-	res, err := i.c.Do(req)
+	res, err := c.c.Do(req)
 	if res != nil {
 		// Properly discard request content to be able to reuse the connection
 		defer io.Copy(ioutil.Discard, res.Body)
@@ -167,4 +175,10 @@ func (i *Client) request(r *requestOptions) ([]byte, error) {
 		return nil, e
 	}
 	return body, nil
+}
+
+// Helper func to replace api host
+// only used for testing
+func (c *Client) setAPIHost(s string) {
+	c.apiHost = s
 }

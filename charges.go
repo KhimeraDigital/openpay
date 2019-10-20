@@ -6,7 +6,7 @@ import (
 	"path"
 )
 
-// Defines the public interface required to access available 'charges' methods
+// ChargesAPI Defines the public interface required to access available 'charges' methods
 type ChargesAPI interface {
 	// https://www.openpay.mx/docs/api/#crear-una-tarjeta
 	AddCard(card *Card) error
