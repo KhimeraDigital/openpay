@@ -2,6 +2,7 @@ package openpay
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"path"
 )
@@ -232,5 +233,5 @@ func (cu *customersClient) DeleteBankAccount(customerID, accountID string) error
 func (cu *customersClient) Charges(customerID string) ChargesAPI {
 	// customers/{customer_id}/charges
 	// 'charges' is added by charges api
-	return cu.charges.SetPrefix(path.Join("customers", customerID) + "/")
+	return cu.charges.SetPrefix(fmt.Sprintf("customers/%s/", customerID))
 }

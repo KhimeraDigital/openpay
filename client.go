@@ -4,18 +4,18 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
-	"path"
 	"time"
 )
 
 // API endpoints
-const testAPI = "https://sandbox-api.openpay.mx/"
-const liveAPI = "https://api.openpay.mx/"
+const testAPI = "https://sandbox-api.openpay.mx/v1"
+const liveAPI = "https://api.openpay.mx/v1"
 
 // Main service handler
 type Client struct {
@@ -31,7 +31,6 @@ type Client struct {
 	c          *http.Client
 	key        string
 	merchantID string
-	apiVersion string
 	userAgent  string
 	apiHost    string
 }
@@ -47,9 +46,6 @@ type Options struct {
 
 	// Maximum network connections to keep open with the service
 	MaxConnections uint
-
-	// API version to use
-	APIVersion string
 
 	// User agent value to report to the service
 	UserAgent string
@@ -71,7 +67,6 @@ func defaultOptions() *Options {
 		Timeout:        30,
 		KeepAlive:      600,
 		MaxConnections: 100,
-		APIVersion:     "v1",
 		UserAgent:      "",
 		UseProduction:  false,
 	}
@@ -109,7 +104,6 @@ func NewClient(key, merchantID string, options *Options) (*Client, error) {
 	client := &Client{
 		key:        key,
 		merchantID: merchantID,
-		apiVersion: options.APIVersion,
 		userAgent:  options.UserAgent,
 		c: &http.Client{
 			Transport: t,
@@ -138,7 +132,7 @@ func NewClient(key, merchantID string, options *Options) (*Client, error) {
 // Dispatch a network request to the service
 func (c *Client) request(r *requestOptions) ([]byte, error) {
 	// Build request endpoint
-	endpoint := c.apiHost + path.Join(c.apiVersion, c.merchantID, r.endpoint)
+	endpoint := fmt.Sprintf("%s/%s/%s", c.apiHost, c.merchantID, r.endpoint)
 	// Encode payload
 	data, err := json.Marshal(r.data)
 	if err != nil {
@@ -175,7 +169,13 @@ func (c *Client) request(r *requestOptions) ([]byte, error) {
 
 	// Get response contents
 	body, err := ioutil.ReadAll(res.Body)
-
+	if err != nil {
+		return nil, &APIError{
+			Description: "Fallo desconocido",
+			HTTPCode:    uint(res.StatusCode),
+		}
+	}
+	log.Println("###### RES Body ", string(body))
 	// Application level errors
 	if res.StatusCode >= 400 {
 		e := &APIError{}

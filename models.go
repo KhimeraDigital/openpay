@@ -22,7 +22,7 @@ type Charge struct {
 
 	// Customer information
 	// Required when executing the charge from a commerce
-	Customer Customer `json:"customer,omitempty"`
+	Customer *Customer `json:"customer,omitempty"`
 
 	// For 'redirect' payments, send a email with the payment form
 	SendEmail bool `json:"send_email"`
