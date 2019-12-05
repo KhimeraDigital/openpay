@@ -2,6 +2,7 @@ package openpay
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"path"
 )
@@ -31,10 +32,14 @@ type ChargesAPI interface {
 
 	// https://www.openpay.mx/docs/api/#devolver-un-cargo
 	Refund(txID string, amount float32, description string) (*Transaction, error)
+
+	// SetPrefix to charges endpoint
+	SetPrefix(prefix string) ChargesAPI
 }
 
 type chargesClient struct {
-	c *Client
+	c      *Client
+	prefix string
 }
 
 func (cc *chargesClient) AddCard(card *Card) error {
@@ -84,8 +89,9 @@ func (cc *chargesClient) List(req *ChargesListRequest) ([]Transaction, error) {
 
 func (cc *chargesClient) AtStore(charge *ChargeAtStore) (*Transaction, error) {
 	charge.Method = "store"
+	endpoint := fmt.Sprintf("%scharges", cc.prefix)
 	b, err := cc.c.request(&requestOptions{
-		endpoint: "charges",
+		endpoint: endpoint,
 		method:   http.MethodPost,
 		data:     charge,
 	})
@@ -100,8 +106,9 @@ func (cc *chargesClient) AtStore(charge *ChargeAtStore) (*Transaction, error) {
 
 func (cc *chargesClient) AtBank(charge *ChargeAtBank) (*Transaction, error) {
 	charge.Method = "bank_account"
+	endpoint := fmt.Sprintf("%scharges", cc.prefix)
 	b, err := cc.c.request(&requestOptions{
-		endpoint: "charges",
+		endpoint: endpoint,
 		method:   http.MethodPost,
 		data:     charge,
 	})
@@ -116,8 +123,9 @@ func (cc *chargesClient) AtBank(charge *ChargeAtBank) (*Transaction, error) {
 
 func (cc *chargesClient) WithCard(charge *ChargeWithStoredCard) (*Transaction, error) {
 	charge.Method = "card"
+	endpoint := fmt.Sprintf("%scharges", cc.prefix)
 	b, err := cc.c.request(&requestOptions{
-		endpoint: "charges",
+		endpoint: endpoint,
 		method:   http.MethodPost,
 		data:     charge,
 	})
@@ -161,4 +169,8 @@ func (cc *chargesClient) Refund(txID string, amount float32, description string)
 	tx := &Transaction{}
 	json.Unmarshal(b, tx)
 	return tx, nil
+}
+func (cc *chargesClient) SetPrefix(prefix string) ChargesAPI {
+	cc.prefix = prefix
+	return cc
 }

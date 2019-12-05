@@ -260,7 +260,7 @@ type Customer struct {
 	ExternalID string `json:"external_id,omitempty"`
 
 	// If the customer is able to hold balance
-	RequiresAccount bool `json:"required_account"`
+	RequiresAccount bool `json:"requires_account"`
 
 	// Registration date in UTC and ISO 8601 format
 	CreationDate time.Time `json:"creation_date,omitempty"`

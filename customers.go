@@ -46,10 +46,14 @@ type CustomersAPI interface {
 
 	// https://www.openpay.mx/docs/api/#eliminar-una-cuenta-bancaria
 	DeleteBankAccount(customerID, accountID string) error
+
+	// Charges related to customer (/customer/{customer_id}/charges)
+	Charges(customerID string) ChargesAPI
 }
 
 type customersClient struct {
-	c *Client
+	c       *Client
+	charges ChargesAPI
 }
 
 func (cu *customersClient) Create(customer *Customer) error {
@@ -223,4 +227,10 @@ func (cu *customersClient) DeleteBankAccount(customerID, accountID string) error
 		data:     nil,
 	})
 	return err
+}
+
+func (cu *customersClient) Charges(customerID string) ChargesAPI {
+	// customers/{customer_id}/charges
+	// 'charges' is added by charges api
+	return cu.charges.SetPrefix(path.Join("customers", customerID) + "/")
 }

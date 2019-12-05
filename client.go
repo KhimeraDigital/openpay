@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"path"
@@ -124,7 +125,12 @@ func NewClient(key, merchantID string, options *Options) (*Client, error) {
 	}
 
 	client.Charges = &chargesClient{c: client}
-	client.Customers = &customersClient{c: client}
+	client.Customers = &customersClient{
+		c: client,
+		charges: &chargesClient{
+			c: client,
+		},
+	}
 	client.Webhooks = &webhooksClient{c: client}
 	return client, nil
 }
@@ -138,6 +144,8 @@ func (c *Client) request(r *requestOptions) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Println("###### Calling ", endpoint)
+	log.Println("###### Body ", string(data))
 	// Create request
 	req, err := http.NewRequest(r.method, endpoint, bytes.NewReader(data))
 	if err != nil {
