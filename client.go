@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"time"
@@ -17,7 +16,7 @@ import (
 const testAPI = "https://sandbox-api.openpay.mx/v1"
 const liveAPI = "https://api.openpay.mx/v1"
 
-// Main service handler
+// Client is the openpayclient
 type Client struct {
 	// Methods related to 'charges' management
 	Charges ChargesAPI
@@ -138,8 +137,6 @@ func (c *Client) request(r *requestOptions) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("###### Calling ", endpoint)
-	log.Println("###### Body ", string(data))
 	// Create request
 	req, err := http.NewRequest(r.method, endpoint, bytes.NewReader(data))
 	if err != nil {
@@ -175,7 +172,6 @@ func (c *Client) request(r *requestOptions) ([]byte, error) {
 			HTTPCode:    uint(res.StatusCode),
 		}
 	}
-	log.Println("###### RES Body ", string(body))
 	// Application level errors
 	if res.StatusCode >= 400 {
 		e := &APIError{}

@@ -6,7 +6,7 @@ import (
 	"path"
 )
 
-// Defines the public interface required to access available 'webhooks' methods
+// WebhooksAPI Defines the public interface required to access available 'webhooks' methods
 type WebhooksAPI interface {
 	// https://www.openpay.mx/docs/api/#crear-un-webhook
 	Create(wh *Webhook) error

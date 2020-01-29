@@ -2,7 +2,7 @@ package openpay
 
 import "fmt"
 
-// Represents service errors
+// APIError Represents service errors
 // https://www.openpay.mx/docs/api/#errores
 type APIError struct {
 	// Valid values are: request, internal, gateway

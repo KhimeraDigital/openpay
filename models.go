@@ -2,7 +2,7 @@ package openpay
 
 import "time"
 
-// Represents a base charge to be executed
+// Charge Represents a base charge to be executed
 // https://www.openpay.mx/docs/api/#cargos
 type Charge struct {
 	// Valid values are: card, store, bank_account
@@ -31,7 +31,7 @@ type Charge struct {
 	RedirectURL string `json:"redirect_url,omitempty"`
 }
 
-// Charges executed as virtual POS
+// ChargeWithVirtualPOS Charges executed as virtual POS
 // https://www.openpay.mx/docs/api/#con-terminal-virtual
 type ChargeWithVirtualPOS struct {
 	Charge
@@ -40,7 +40,7 @@ type ChargeWithVirtualPOS struct {
 	Confirm bool `json:"confirm"`
 }
 
-// Charges executed using a previously stored card id or token
+// ChargeWithStoredCard Charges executed using a previously stored card id or token
 // https://www.openpay.mx/docs/api/#con-id-de-tarjeta-o-token
 type ChargeWithStoredCard struct {
 	Charge
@@ -71,7 +71,7 @@ type ChargeWithStoredCard struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
-// Charges to be executed in a convenience store
+// ChargeAtStore Charges to be executed in a convenience store
 // https://www.openpay.mx/docs/api/#cargo-en-tienda
 type ChargeAtStore struct {
 	Charge
@@ -80,7 +80,7 @@ type ChargeAtStore struct {
 	DueDate time.Time `json:"due_date"`
 }
 
-// Charges to be executed with a bank transfer reference
+// ChargeAtBank Charges to be executed with a bank transfer reference
 // https://www.openpay.mx/docs/api/#cargo-en-banco
 type ChargeAtBank struct {
 	Charge
@@ -89,7 +89,7 @@ type ChargeAtBank struct {
 	DueDate time.Time `json:"due_date"`
 }
 
-// Represents an executed transaction
+// Transaction Represents an executed transaction
 // https://www.openpay.mx/docs/api/#objeto-transacci-n
 type Transaction struct {
 	// Unique identifier
@@ -145,6 +145,7 @@ type Transaction struct {
 	PaymentMethod *PaymentMethod `json:"payment_method,omitempty"`
 }
 
+// PaymentMethod model
 type PaymentMethod struct {
 	Type             string `json:"type,omitempty"`
 	Reference        string `json:"reference,omitempty"`
@@ -157,7 +158,7 @@ type PaymentMethod struct {
 	Name             string `json:"name,omitempty"`
 }
 
-// Basic address information
+// Address Basic address information
 // https://www.openpay.mx/docs/api/#objeto-direcci-n
 type Address struct {
 	// Usually used to specify street and number, required
@@ -182,14 +183,14 @@ type Address struct {
 	CountryCode string `json:"country_code,omitempty"`
 }
 
-// Monthly installments charge
+// PaymentPlan Monthly installments charge
 // https://www.openpay.mx/docs/api/#objeto-paymentplan
 type PaymentPlan struct {
 	// Number of monthly installments for the operation: 3, 6, 9, 12
 	Payments string `json:"payments,omitempty"`
 }
 
-// Provides details for charges at convenience stores
+// Store Provides details for charges at convenience stores
 // https://www.openpay.mx/docs/api/#objeto-store
 type Store struct {
 	// Charge reference
@@ -205,7 +206,7 @@ type Store struct {
 	BarcodePaybinURL string `json:"barcode_paybin_url,omitempty"`
 }
 
-// Details of used card points
+// CardPoints Details of used card points
 // https://www.openpay.mx/docs/api/#objeto-cardpoints
 type CardPoints struct {
 	// Number of points used
@@ -214,14 +215,14 @@ type CardPoints struct {
 	// Number of points remaining in the card after the transaction
 	Remaining uint `json:"remaining"`
 
-	// Transaction amount payed for with points
+	// Transaction amount paid for with points
 	Amount float32 `json:"amount"`
 
 	// Message to be displayed to the customer
 	Caption string `json:"caption,omitempty"`
 }
 
-// Custom card chain
+// PaynetChain Custom card chain
 // https://www.openpay.mx/docs/api/#objeto-paynetchain
 type PaynetChain struct {
 	// Chain name
@@ -237,7 +238,7 @@ type PaynetChain struct {
 	MaxAmount float32 `json:"max_amount"`
 }
 
-// Georeferenced location
+// Geolocation Georeferenced location
 // https://www.openpay.mx/docs/api/#objeto-geolocation
 type Geolocation struct {
 	// Latitude
@@ -250,7 +251,7 @@ type Geolocation struct {
 	PlaceID string `json:"place_id,omitempty"`
 }
 
-// Individual customer information
+// Customer Individual customer information
 // https://www.openpay.mx/docs/api/#clientes
 type Customer struct {
 	// Unique identifier
@@ -351,7 +352,7 @@ type Card struct {
 	TokenID string `json:"token_id,omitempty"`
 }
 
-// Customer's bank account details
+// BankAccount Customer's bank account details
 // https://www.openpay.mx/docs/api/#cuentas-bancarias
 type BankAccount struct {
 	// Unique identifier
@@ -376,7 +377,7 @@ type BankAccount struct {
 	BankCode string `json:"bank_code,omitempty"`
 }
 
-// Request a paginated list of items
+// ListRequest Request a paginated list of items
 type ListRequest struct {
 	// Maximum number of records
 	Limit uint `json:"limit"`
@@ -394,7 +395,7 @@ type ListRequest struct {
 	CreationLte string `json:"creation[lte],omitempty"`
 }
 
-// Request a list of customers
+// CustomersListRequest Request a list of customers
 // https://www.openpay.mx/docs/api/#listado-de-clientes
 type CustomersListRequest struct {
 	ListRequest
@@ -403,7 +404,7 @@ type CustomersListRequest struct {
 	ExternalID string `json:"external_id,omitempty"`
 }
 
-// Request a list of charges records
+// ChargesListRequest Request a list of charges records
 // https://www.openpay.mx/docs/api/#listado-de-cargos
 type ChargesListRequest struct {
 	// Amount to charge, with up to two decimal digits

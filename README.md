@@ -11,9 +11,9 @@ Pure Go [OpenPay](https://www.openpay.mx/) client implementation.
 package main
 
 import (
-	"gitlab.com/khimera.digital/public/openpay-go/openpay"
+	"gitlab.com/khimera.digital/public/openpay-go/v0"
 	// If you're not using go modules, use this import instead
-	// openpay "gitlab.com/khimera.digital/public/openpay-go/openpay-go"
+	// openpay "gitlab.com/khimera.digital/public/openpay-go"
 )
 
 func main() {
